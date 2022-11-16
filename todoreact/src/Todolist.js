@@ -20,38 +20,70 @@ const Todolist = memo(({ index, content, complete }) => {
 
   const changeComplete = useCallback(
     (e) => {
-      if (e.target.checked) {
-        setTodoList(
-          produce(todoList, (draft) => {
-            draft[e.target.name].complete = true;
-          })
-        );
-      } else {
-        setTodoList(
-          produce(todoList, (draft) => {
-            draft[e.target.name].complete = false;
-          })
-        );
-      }
+      fetch(
+        `http://${process.env.REACT_APP_HOST}:${process.env.REACT_APP_PORT}/list/${e.target.name}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-type": "application/json",
+          },
+          body: JSON.stringify({
+            complete: e.target.checked,
+          }),
+        }
+      )
+        .then((res) => res.json())
+        .then((data) => {
+          setTodoList(
+            produce(todoList, (draft) => {
+              draft[
+                draft.findIndex((v) => v.contentId === Number(data.contentId))
+              ].complete = data.complete;
+            })
+          );
+        });
     },
     [todoList]
   );
 
-  const deleteList = (e) => {
-    console.log(e.target.parentElement.firstElementChild.name);
-    setTodoList(
-      produce(todoList, (draft) => {
-        draft.splice(Number(e.target.parentElement.firstElementChild.name), 1);
-      })
-    );
-  };
+  const deleteList = useCallback(
+    (e) => {
+      console.log(e.target.parentElement.firstElementChild.name);
+      setTodoList(
+        produce(todoList, (draft) => {
+          draft.splice(
+            Number(e.target.parentElement.firstElementChild.name),
+            1
+          );
+        })
+      );
+      fetch(
+        `http://${process.env.REACT_APP_HOST}:${process.env.REACT_APP_PORT}/list/${e.target.parentElement.firstElementChild.name}`,
+        {
+          method: "DELETE",
+        }
+      )
+        .then((res) => res.json())
+        .then((data) => {
+          setTodoList(
+            produce(todoList, (draft) => {
+              draft.splice(
+                draft.findIndex((v) => v.contentId === Number(data.contentId)),
+                1
+              );
+            })
+          );
+        });
+    },
+    [todoList]
+  );
 
   return (
     <>
       <label>
         <ListGroup.Item
           className="d-flex justify-content-between align-items-center"
-          variant={randomColor[parseInt(Math.random() * 6.99999)]}
+          variant={randomColor[Math.floor(Math.random() * 7.999999)]}
         >
           <span className="fw-bold fs-5">{content}</span>
           <div>

@@ -1,7 +1,7 @@
 import React, { useState, useRef, useCallback, useEffect } from "react";
 import Todolist from "./Todolist";
 import produce from "immer";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useResetRecoilState } from "recoil";
 import { todoListState } from "./atom";
 import { ProgressBar, ListGroup, Button } from "react-bootstrap";
 
@@ -10,13 +10,31 @@ const TodolistPage = () => {
   // const [todoList, setTodoList] = useState([]);
   const [todoList, setTodoList] = useRecoilState(todoListState);
   const todoInputRef = useRef(null);
+  const resetTodoList = useResetRecoilState(todoListState);
 
   useEffect(() => {
     fetch(
       `http://${process.env.REACT_APP_HOST}:${process.env.REACT_APP_PORT}/list`
     )
       .then((res) => res.json())
-      .then((data) => console.log(data));
+      .then((data) => {
+        const arr = [];
+        for (let i of data) {
+          arr.push({
+            contentId: i.id,
+            content: i.content,
+            complete: i.complete === 0 ? false : true,
+          });
+        }
+        setTodoList(
+          produce(todoList, (draft) => {
+            draft.push(...arr);
+          })
+        );
+      });
+    return () => {
+      resetTodoList();
+    };
   }, []);
 
   const changeInputValue = useCallback(
@@ -29,12 +47,34 @@ const TodolistPage = () => {
   const addTodo = useCallback(
     (e) => {
       e.preventDefault();
-      // setTodoList((v) => [...v, todoInputValue]);
-      setTodoList(
-        produce(todoList, (draft) => {
-          draft.push({ content: todoInputValue, complete: false });
-        })
-      );
+      fetch(
+        `http://${process.env.REACT_APP_HOST}:${process.env.REACT_APP_PORT}/list`,
+        {
+          method: "POST",
+          headers: {
+            "Content-type": "application/json",
+          },
+          body: JSON.stringify({ content: todoInputValue }),
+        }
+      )
+        .then((res) => res.json())
+        .then((data) => {
+          fetch(
+            `http://${process.env.REACT_APP_HOST}:${process.env.REACT_APP_PORT}/list/${data.message}`
+          )
+            .then((res) => res.json())
+            .then((data) => {
+              setTodoList(
+                produce(todoList, (draft) => {
+                  draft.push({
+                    contentId: data[0].id,
+                    content: data[0].content,
+                    complete: data[0].complete === 0 ? false : true,
+                  });
+                })
+              );
+            });
+        });
       setTodoInputValue("");
       todoInputRef.current.focus();
     },
@@ -71,8 +111,8 @@ const TodolistPage = () => {
               {todoList.map((v, i) =>
                 v.complete === false ? (
                   <Todolist
-                    key={(v, i)}
-                    index={i}
+                    key={v.contentId}
+                    index={v.contentId}
                     content={v.content}
                     complete={v.complete}
                   />
@@ -87,8 +127,8 @@ const TodolistPage = () => {
             {todoList.map((v, i) =>
               v.complete === true ? (
                 <Todolist
-                  key={(v, i)}
-                  index={i}
+                  key={v.contentId}
+                  index={v.contentId}
                   content={v.content}
                   complete={v.complete}
                 />
