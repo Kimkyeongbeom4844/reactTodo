@@ -89,7 +89,7 @@ const Todolist = memo(({ index, content, complete }) => {
           <div>
             {complete === true ? (
               <input
-                className="d-none"
+                // className="d-none"
                 name={index}
                 type="checkbox"
                 onChange={changeComplete}
@@ -98,7 +98,7 @@ const Todolist = memo(({ index, content, complete }) => {
             ) : (
               <>
                 <input
-                  className="d-none"
+                  // className="d-none"
                   name={index}
                   type="checkbox"
                   onChange={changeComplete}
