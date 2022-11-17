@@ -1,8 +1,8 @@
-# React + Express + MySQL
+# 토이프로젝트 1편
 
 ## 🔎Introduce
 
-리액트와 익스프레스를 사용한 ToDoList입니다
+React와 NodeJS와 MySQL을 사용한 ToDoList입니다
 
 ## ⛏ Development Environment
 
