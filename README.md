@@ -10,11 +10,11 @@
 
   <b>React</b>
 
-  - recoil, react-router-dom, react-bootstrap, styled-components
+  - recoil, react-router-dom, react-bootstrap, styled-components, immer
 
 - ### Back-End
-  <b>Express</b>
-  - Route, mysql
+  <b>NodeJS</b>
+  - express, dotenv, morgan, mysql, cors
 
 ## 👨‍💻 Developers
 
