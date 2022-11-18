@@ -1,22 +1,12 @@
 import React, { memo, useCallback } from "react";
-import { todoListState } from "./atom";
-import { useRecoilState } from "recoil";
+import { todoListState, randomColorState } from "../state/atom";
+import { useRecoilState, useRecoilValue } from "recoil";
 import produce from "immer";
 import { CloseButton, ListGroup } from "react-bootstrap";
 
-const randomColor = [
-  "primary",
-  "secondary",
-  "success",
-  "danger",
-  "warning",
-  "info",
-  "light",
-  "dark",
-];
-
 const Todolist = memo(({ index, content, complete }) => {
   const [todoList, setTodoList] = useRecoilState(todoListState);
+  const randomColor = useRecoilValue(randomColorState);
 
   const changeComplete = useCallback(
     (e) => {
@@ -89,7 +79,7 @@ const Todolist = memo(({ index, content, complete }) => {
           <div>
             {complete === true ? (
               <input
-                // className="d-none"
+                className="d-none"
                 name={index}
                 type="checkbox"
                 onChange={changeComplete}
@@ -98,7 +88,7 @@ const Todolist = memo(({ index, content, complete }) => {
             ) : (
               <>
                 <input
-                  // className="d-none"
+                  className="d-none"
                   name={index}
                   type="checkbox"
                   onChange={changeComplete}

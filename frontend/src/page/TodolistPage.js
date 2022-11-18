@@ -1,8 +1,8 @@
 import React, { useState, useRef, useCallback, useEffect } from "react";
-import Todolist from "./Todolist";
+import Todolist from "../component/Todolist";
 import produce from "immer";
 import { useRecoilState, useResetRecoilState } from "recoil";
-import { todoListState } from "./atom";
+import { todoListState } from "../state/atom";
 import { ProgressBar, ListGroup, Button } from "react-bootstrap";
 
 const TodolistPage = () => {
@@ -32,9 +32,7 @@ const TodolistPage = () => {
           })
         );
       });
-    return () => {
-      resetTodoList();
-    };
+    return resetTodoList;
   }, []);
 
   const changeInputValue = useCallback(
