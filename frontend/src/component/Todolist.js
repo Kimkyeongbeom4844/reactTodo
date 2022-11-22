@@ -3,7 +3,7 @@ import { todoListState, randomColorState } from "../state/atom";
 import { useRecoilState, useRecoilValue } from "recoil";
 import produce from "immer";
 import { CloseButton, ListGroup } from "react-bootstrap";
-import { listDatabase } from "../api/api";
+import { fetcher } from "../api/api";
 
 const Todolist = memo(({ index, content, complete }) => {
   const [todoList, setTodoList] = useRecoilState(todoListState);
@@ -11,7 +11,7 @@ const Todolist = memo(({ index, content, complete }) => {
 
   const changeComplete = useCallback(
     (e) => {
-      listDatabase(`/${e.target.name}`, {
+      fetcher(`/${e.target.name}`, {
         method: "PATCH",
         headers: {
           "Content-type": "application/json",
@@ -42,7 +42,7 @@ const Todolist = memo(({ index, content, complete }) => {
           );
         })
       );
-      listDatabase(`/${e.target.parentElement.firstElementChild.name}`, {
+      fetcher(`/${e.target.parentElement.firstElementChild.name}`, {
         method: "DELETE",
       }).then((data) => {
         setTodoList(

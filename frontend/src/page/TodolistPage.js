@@ -4,7 +4,8 @@ import produce from "immer";
 import { useRecoilState, useResetRecoilState } from "recoil";
 import { todoListState } from "../state/atom";
 import { ProgressBar, ListGroup, Button } from "react-bootstrap";
-import { listDatabase } from "../api/api";
+import { fetcher } from "../api/api";
+import useSWR from "swr";
 
 const TodolistPage = () => {
   const [todoInputValue, setTodoInputValue] = useState("");
@@ -13,7 +14,7 @@ const TodolistPage = () => {
   const resetTodoList = useResetRecoilState(todoListState);
 
   useEffect(() => {
-    listDatabase("/", null).then((data) => {
+    fetcher("/", null).then((data) => {
       const arr = [];
       for (let i of data) {
         arr.push({
@@ -41,14 +42,14 @@ const TodolistPage = () => {
   const addTodo = useCallback(
     (e) => {
       e.preventDefault();
-      listDatabase(`/`, {
+      fetcher(`/`, {
         method: "POST",
         headers: {
           "Content-type": "application/json",
         },
         body: JSON.stringify({ content: todoInputValue }),
       }).then((data) => {
-        listDatabase(`/${data.message}`, null).then((data) => {
+        fetcher(`/${data.message}`, null).then((data) => {
           setTodoList(
             produce(todoList, (draft) => {
               draft.push({
