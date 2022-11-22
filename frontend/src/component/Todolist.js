@@ -38,7 +38,6 @@ const Todolist = memo(({ index, content, complete }) => {
 
   const deleteList = useCallback(
     (e) => {
-      console.log(e.target.parentElement.firstElementChild.name);
       setTodoList(
         produce(todoList, (draft) => {
           draft.splice(
