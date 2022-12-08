@@ -5,7 +5,6 @@ import { useRecoilState, useResetRecoilState } from "recoil";
 import { todoListState } from "../state/atom";
 import { ProgressBar, ListGroup, Button } from "react-bootstrap";
 import { fetcher } from "../api/api";
-import useSWR from "swr";
 
 const TodolistPage = () => {
   const [todoInputValue, setTodoInputValue] = useState("");
@@ -15,12 +14,13 @@ const TodolistPage = () => {
 
   useEffect(() => {
     fetcher("/", null).then((data) => {
+      console.log(data);
       const arr = [];
       for (let i of data) {
         arr.push({
           contentId: i.id,
           content: i.content,
-          complete: i.complete === 0 ? false : true,
+          complete: i.complete,
         });
       }
       setTodoList(
@@ -49,7 +49,9 @@ const TodolistPage = () => {
         },
         body: JSON.stringify({ content: todoInputValue }),
       }).then((data) => {
-        fetcher(`/${data.message}`, null).then((data) => {
+        console.log(data);
+        fetcher(`/${data.id}`, null).then((data) => {
+          console.log(data);
           setTodoList(
             produce(todoList, (draft) => {
               draft.push({
