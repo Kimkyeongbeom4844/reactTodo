@@ -14,7 +14,7 @@ React와 NodeJS와 MySQL을 사용한 ToDoList입니다
 
 - ### Back-End
   <b>NodeJS</b>
-  - express, dotenv, morgan, --mysql, mysql2, cors, sequelize, sequelize-cli
+  - express, dotenv, morgan, ~~mysql~~, mysql2, cors, sequelize, sequelize-cli
 
 ## 👨‍💻 Developers
 
