@@ -57,7 +57,7 @@ const TodolistPage = () => {
               draft.push({
                 contentId: data[0].id,
                 content: data[0].content,
-                complete: data[0].complete === 0 ? false : true,
+                complete: data[0].complete,
               });
             })
           );

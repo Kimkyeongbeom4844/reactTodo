@@ -26,6 +26,7 @@ module.exports = (sequelize, DataTypes) => {
     {
       sequelize,
       modelName: "Todolist",
+      tableName: "todolist", //기본값은 모델이름 lowercase후 뒤에 s
       charset: "utf8",
       timestamps: false,
     }

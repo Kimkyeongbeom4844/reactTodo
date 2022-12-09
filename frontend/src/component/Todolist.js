@@ -12,7 +12,7 @@ const Todolist = memo(({ index, content, complete }) => {
   const changeComplete = useCallback(
     (e) => {
       fetcher(`/${e.target.name}`, {
-        method: "PATCH",
+        method: "PUT",
         headers: {
           "Content-type": "application/json",
         },
@@ -20,6 +20,7 @@ const Todolist = memo(({ index, content, complete }) => {
           complete: e.target.checked,
         }),
       }).then((data) => {
+        console.log(data);
         setTodoList(
           produce(todoList, (draft) => {
             draft[
@@ -45,6 +46,7 @@ const Todolist = memo(({ index, content, complete }) => {
       fetcher(`/${e.target.parentElement.firstElementChild.name}`, {
         method: "DELETE",
       }).then((data) => {
+        console.log(data);
         setTodoList(
           produce(todoList, (draft) => {
             draft.splice(

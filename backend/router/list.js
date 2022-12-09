@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const db = require("../database/db");
+// const db = require("../database/db");
 const { Todolist } = require("../models");
 
 router
@@ -69,33 +69,64 @@ router
     //   }
     // );
   })
-  .patch((req, res) => {
-    db.query(
-      `update ${process.env.EXPRESS_APP_TABLE} set complete=${req.body.complete} where id=${req.params.id}`,
-      (err, ok) => {
-        if (err) {
-          console.log(err);
-          return res.send(err);
-        }
-        return res.json({
-          contentId: req.params.id,
+  .put(async (req, res) => {
+    try {
+      const result = await Todolist.update(
+        {
           complete: req.body.complete,
-        });
-      }
-    );
-  })
-  .delete((req, res) => {
-    console.log(req.params.id);
-    db.query(
-      `delete from ${process.env.EXPRESS_APP_TABLE} where id=${req.params.id}`,
-      (err, ok) => {
-        if (err) {
-          console.log(err);
-          return res.send(err);
+        },
+        {
+          where: {
+            id: req.params.id,
+          },
         }
-        return res.json({ contentId: req.params.id });
-      }
-    );
+      );
+      console.log(result);
+      res.json({
+        contentId: req.params.id,
+        complete: req.body.complete,
+      });
+    } catch (err) {
+      res.status(200).send(err);
+    }
+
+    // db.query(
+    //   `update ${process.env.EXPRESS_APP_TABLE} set complete=${req.body.complete} where id=${req.params.id}`,
+    //   (err, ok) => {
+    //     if (err) {
+    //       console.log(err);
+    //       return res.send(err);
+    //     }
+    // return res.json({
+    //   contentId: req.params.id,
+    //   complete: req.body.complete,
+    // });
+    //   }
+    // );
+  })
+  .delete(async (req, res) => {
+    console.log(req.params.id);
+    try {
+      const result = await Todolist.destroy({
+        where: {
+          id: req.params.id,
+        },
+      });
+      console.log(result);
+      res.json({ contentId: req.params.id });
+    } catch (err) {
+      res.status(200).send(err);
+    }
+    // db.query(
+    //   `delete from ${process.env.EXPRESS_APP_TABLE} where id=${req.params.id}`,
+    //   (err, ok) => {
+    //     if (err) {
+    //       console.log(err);
+    //       return res.send(err);
+    //     }
+    //     return res.json({ contentId: req.params.id });
+    //   }
+    // );
   });
 
 module.exports = router;
